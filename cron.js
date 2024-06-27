@@ -1,11 +1,12 @@
+const { CronJob } = require('cron');
 const { Vonage } = require('@vonage/server-sdk');
 const mongoose = require('mongoose');
 const Member = require('./models/members'); // Adjust the path as needed
 require('dotenv').config();
 
 const vonage = new Vonage({
-    apiKey: process.env.API_KEY,
-    apiSecret: process.env.API_SECRET
+  apiKey: process.env.API_KEY,
+  apiSecret: process.env.API_SECRET
 });
 
 const from = "Rishus Infotech";
@@ -51,4 +52,19 @@ async function checkBirthdaysAndSendMessages() {
   }
 }
 
-checkBirthdaysAndSendMessages();
+function startCronJobs() {
+  const cronJob = new CronJob(
+    '15 9  * * *',
+    checkBirthdaysAndSendMessages,
+    null,
+    true, // Start the job immediately
+    'Asia/Kolkata' // Time zone for the job
+  );
+
+  cronJob.start();
+}
+module.exports = {
+  startCronJobs,
+};
+
+
